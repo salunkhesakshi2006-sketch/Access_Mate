@@ -6,22 +6,22 @@ from google import genai
 from google.genai import types
 from gtts import gTTS
 
+import os
+import streamlit as st
+from google import genai
+
+
 def get_client():
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    api_key = os.getenv("GEMINI_API_KEY", "")
 
     if not api_key:
         try:
-            api_key = str(
-                st.secrets.get("GEMINI_API_KEY", "")
-            ).strip()
+            api_key = st.secrets.get("GEMINI_API_KEY", "")
         except Exception:
             api_key = ""
 
     if not api_key:
-        raise RuntimeError(
-            "Gemini API key is missing. "
-            "Check AccessMate_AI/.streamlit/secrets.toml"
-        )
+        raise ValueError("Gemini API key is missing.")
 
     return genai.Client(api_key=api_key)
 
